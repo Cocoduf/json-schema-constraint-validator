@@ -1,0 +1,34 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Transaction",
+	"type": "object",
+	"properties": {
+		"price": {
+			"type": "number",
+			"minimum": 0
+		},
+		"amountPaid": {
+			"type": "number",
+			"minimum": 0,
+			"constraints": [
+				{
+					"type": "valueGreaterThanOrEqualTo",
+					"target": "#/price"
+				}
+			]
+		},
+		"change": {
+			"type": "number",
+			"minimum": 0,
+			"constraints": [
+				{
+					"type": "valueEqualTo",
+					"target": "#/amountPaid",
+					"options": {
+						"subtract": ["#/price"]
+					}
+				}
+			]
+		}
+	}
+}
