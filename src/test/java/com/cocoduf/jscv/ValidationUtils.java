@@ -1,4 +1,4 @@
-package com.cocoduf.jsv;
+package com.cocoduf.jscv;
 
 import java.io.File;
 import java.io.IOException;

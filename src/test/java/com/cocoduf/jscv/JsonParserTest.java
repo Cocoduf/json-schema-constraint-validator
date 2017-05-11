@@ -1,6 +1,5 @@
-package com.cocoduf.jsv;
+package com.cocoduf.jscv;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.Assert;
