@@ -1,12 +1,12 @@
 package com.cocoduf.jscv;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.google.gson.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
+import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,14 +15,19 @@ import java.util.Set;
  */
 public class JsonParserTest {
 
-    private File getFileResource(String fileName) {
-        return new File(getClass().getClassLoader().getResource(fileName).getFile());
+    private File getFileResource(String fileName) throws NullPointerException {
+        URL fileUrl = getClass().getClassLoader().getResource(fileName);
+        if (fileUrl != null) {
+            return new File(fileUrl.getFile());
+        } else {
+            throw new NullPointerException("Resource "+fileName+" not found.");
+        }
     }
 
-    private JsonObject getJsonObject(String fileName) {
-        JsonParser parser = new JsonParser();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+    private JsonObject getJsonObject(File file) throws FileNotFoundException, JsonParseException {
+        InputStream inputStream = new FileInputStream(file);
         Reader reader = new InputStreamReader(inputStream);
+        JsonParser parser = new JsonParser();
         return parser.parse(reader).getAsJsonObject();
     }
 
@@ -32,24 +37,66 @@ public class JsonParserTest {
             File schemaFile = getFileResource("constraints.json");
             File jsonFile = getFileResource("data.json");
             Assert.assertEquals(true, ValidationUtils.isJsonValid(schemaFile, jsonFile));
-        } catch (Exception e) {
-            Assert.assertEquals(true,false);
+        } catch (NullPointerException e) {
+            System.out.println("NullPointerException : " + e.getMessage());
+            Assert.fail();
+        } catch (ProcessingException e) {
+            System.out.println("ProcessingException : " + e.getMessage());
+            Assert.fail();
+        } catch (IOException e) {
+            System.out.println("IOException : " + e.getMessage());
+            Assert.fail();;
         }
     }
 
     @Test
     public void testLoadJsonResources() {
-        JsonObject dataRootObject = getJsonObject("data.json");
-        JsonObject constraintsRootObject = getJsonObject("constraints.json");
+        try {
+            File dataFile = getFileResource("data.json");
+            JsonObject dataRootObject = getJsonObject(dataFile);
+            File constraintsFile = getFileResource("constraints.json");
+            JsonObject constraintsRootObject = getJsonObject(constraintsFile);
+        } catch (NullPointerException e) {
+            System.out.println("NullPointerException : " + e.getMessage());
+            Assert.fail();
+        } catch (FileNotFoundException e) {
+            System.out.println("FileNotFoundException : " + e.getMessage());
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testGetNullJsonObject() {
+        try {
+            File dataFile = getFileResource("null.json");
+            JsonObject dataRootObject = getJsonObject(dataFile);
+            Assert.fail();
+        } catch (NullPointerException e) {
+            System.out.println("NullPointerException : " + e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println("FileNotFoundException : " + e.getMessage());
+        }
     }
 
     @Test
     public void testLoopOverDataEntrySet() {
-        JsonObject rootObject = getJsonObject("data.json");
-        Set<Map.Entry<String, JsonElement>> entrySet = rootObject.entrySet();
-        Assert.assertEquals(entrySet.size(), 3);
-        for (Map.Entry<String, JsonElement> entry : entrySet) {
-            Assert.assertNotEquals(entry.getValue(), null);
+        try {
+            File dataFile = getFileResource("data.json");
+            JsonObject dataRootObject = getJsonObject(dataFile);
+            Set<Map.Entry<String, JsonElement>> entrySet = dataRootObject.entrySet();
+            Assert.assertEquals(entrySet.size(), 3);
+            for (Map.Entry<String, JsonElement> entry : entrySet) {
+                Assert.assertNotEquals(entry.getValue(), null);
+            }
+        } catch (NullPointerException e) {
+            System.out.println("NullPointerException : " + e.getMessage());
+            Assert.fail();
+        } catch (FileNotFoundException e) {
+            System.out.println("FileNotFoundException : " + e.getMessage());
+            Assert.fail();
+        } catch (JsonParseException e) {
+            System.out.println("JsonParseException : " + e.getMessage());
+            Assert.fail();
         }
     }
 }
