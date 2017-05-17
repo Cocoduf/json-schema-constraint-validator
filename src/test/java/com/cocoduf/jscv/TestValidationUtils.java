@@ -13,7 +13,7 @@ import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 
-public class ValidationUtils {
+public class TestValidationUtils {
 
     public static final String JSON_V4_SCHEMA_IDENTIFIER = "http://json-schema.org/draft-04/schema#";
     public static final String JSON_SCHEMA_IDENTIFIER_ELEMENT = "$schema";

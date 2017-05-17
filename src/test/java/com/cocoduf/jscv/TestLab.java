@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * Created by cocoduf on 17-05-11.
  */
-public class TestJsonParser {
+public class TestLab {
 
     private File getFileResource(String fileName) throws FileNotFoundException {
         URL fileUrl = getClass().getClassLoader().getResource(fileName);

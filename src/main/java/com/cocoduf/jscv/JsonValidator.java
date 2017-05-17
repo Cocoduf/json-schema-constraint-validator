@@ -4,10 +4,8 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.*;
-import java.net.URL;
 
 /**
  * Created by cocoduf on 17-05-16.
@@ -19,31 +17,6 @@ public class JsonValidator {
 
     public JsonValidator() {
 
-    }
-
-    /**
-     *
-     * @param file
-     * @return a JsonObject of the JSON from the file.
-     * @throws FileNotFoundException
-     * @throws JsonParseException
-     */
-    private JsonObject getJsonObjectFromFile(File file) throws FileNotFoundException, JsonParseException {
-        InputStream inputStream = new FileInputStream(file);
-        Reader reader = new InputStreamReader(inputStream);
-        JsonParser parser = new JsonParser();
-        return parser.parse(reader).getAsJsonObject();
-    }
-
-    /**
-     *
-     * @param file
-     * @return a string of the JSON from the file.
-     * @throws FileNotFoundException
-     * @throws JsonParseException
-     */
-    private String getJsonTextFromFile(File file) throws FileNotFoundException, JsonParseException {
-        return getJsonObjectFromFile(file).toString();
     }
 
     /**
@@ -63,8 +36,7 @@ public class JsonValidator {
      * @throws JsonParseException
      */
     public void setSchema(File schemaFile) throws FileNotFoundException, JsonParseException {
-        this.schemaText =  getJsonTextFromFile(schemaFile);
-        this.schemaRootObject = getJsonObjectFromFile(schemaFile);
+        setSchema(getJsonTextFromFile(schemaFile));
     }
 
     /**
@@ -78,7 +50,7 @@ public class JsonValidator {
     public boolean validateJson(String jsonText) throws IllegalStateException, ProcessingException, IOException {
         if (schemaText != null) {
             {
-                return ValidationUtils.isJsonValid(schemaText, jsonText);
+                return ValidationUtils.isJsonValid(schemaText, jsonText) && validateConstraints(schemaText, jsonText);
             }
         } else {
             throw new IllegalStateException("Missing schema.");
@@ -94,13 +66,53 @@ public class JsonValidator {
      * @throws IOException
      */
     public boolean validateJson(File jsonFile) throws IllegalStateException, ProcessingException, IOException {
-        if (schemaText != null) {
-            {
-                return ValidationUtils.isJsonValid(schemaText, getJsonTextFromFile(jsonFile));
-            }
-        } else {
-            throw new IllegalStateException("Missing schema.");
-        }
+        return validateJson(getJsonTextFromFile(jsonFile));
     }
 
+    /**
+     *
+     * @param schemaText
+     * @param jsonText
+     * @return whether the constraints validation has been successful.
+     */
+    public boolean validateConstraints(String schemaText, String jsonText) {
+        return new ConstraintsValidator(getJsonObjectFromText(schemaText)).isJsonValid(getJsonObjectFromText(jsonText));
+    }
+
+    /******************************************************************************************************************/
+
+    /**
+     *
+     * @param file
+     * @return a JsonObject of the JSON from the file.
+     * @throws FileNotFoundException
+     * @throws JsonParseException
+     */
+    private JsonObject getJsonObjectFromFile(File file) throws FileNotFoundException, JsonParseException {
+        InputStream inputStream = new FileInputStream(file);
+        Reader reader = new InputStreamReader(inputStream);
+        JsonParser parser = new JsonParser();
+        return parser.parse(reader).getAsJsonObject();
+    }
+
+    /**
+     *
+     * @param text
+     * @return a JsonObject of the JSON from the text.
+     * @throws JsonParseException
+     */
+    private JsonObject getJsonObjectFromText(String text) throws JsonParseException {
+        return new JsonParser().parse(text).getAsJsonObject();
+    }
+
+    /**
+     *
+     * @param file
+     * @return a string of the JSON from the file.
+     * @throws FileNotFoundException
+     * @throws JsonParseException
+     */
+    private String getJsonTextFromFile(File file) throws FileNotFoundException, JsonParseException {
+        return getJsonObjectFromFile(file).toString();
+    }
 }
