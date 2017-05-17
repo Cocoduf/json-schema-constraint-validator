@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * Created by cocoduf on 17-05-11.
  */
-public class JsonParserTest {
+public class TestJsonParser {
 
     private File getFileResource(String fileName) throws FileNotFoundException {
         URL fileUrl = getClass().getClassLoader().getResource(fileName);
@@ -41,7 +41,7 @@ public class JsonParserTest {
         try {
             File schemaFile = getFileResource("constraints.json");
             File jsonFile = getFileResource("data.json");
-            Assert.assertEquals(true, ValidationUtils.isJsonValid(schemaFile, jsonFile));
+            Assert.assertEquals(true, TestValidationUtils.isJsonValid(schemaFile, jsonFile));
         } catch (Exception e) {
             handleException(e);
             Assert.fail();
