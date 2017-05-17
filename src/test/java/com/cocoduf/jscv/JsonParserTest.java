@@ -1,12 +1,13 @@
 package com.cocoduf.jscv;
 
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.google.gson.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
 import java.net.URL;
+import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,20 +16,24 @@ import java.util.Set;
  */
 public class JsonParserTest {
 
-    private File getFileResource(String fileName) throws NullPointerException {
+    private File getFileResource(String fileName) throws FileNotFoundException {
         URL fileUrl = getClass().getClassLoader().getResource(fileName);
         if (fileUrl != null) {
             return new File(fileUrl.getFile());
         } else {
-            throw new NullPointerException("Resource "+fileName+" not found.");
+            throw new FileNotFoundException("Resource "+fileName+" not found.");
         }
     }
 
-    private JsonObject getJsonObject(File file) throws FileNotFoundException, JsonParseException {
+    private JsonObject getJsonObjectFromFile(File file) throws FileNotFoundException, JsonParseException {
         InputStream inputStream = new FileInputStream(file);
         Reader reader = new InputStreamReader(inputStream);
         JsonParser parser = new JsonParser();
         return parser.parse(reader).getAsJsonObject();
+    }
+
+    private void handleException(Exception e) {
+        System.out.println(e);
     }
 
     @Test
@@ -37,15 +42,9 @@ public class JsonParserTest {
             File schemaFile = getFileResource("constraints.json");
             File jsonFile = getFileResource("data.json");
             Assert.assertEquals(true, ValidationUtils.isJsonValid(schemaFile, jsonFile));
-        } catch (NullPointerException e) {
-            System.out.println("NullPointerException : " + e.getMessage());
+        } catch (Exception e) {
+            handleException(e);
             Assert.fail();
-        } catch (ProcessingException e) {
-            System.out.println("ProcessingException : " + e.getMessage());
-            Assert.fail();
-        } catch (IOException e) {
-            System.out.println("IOException : " + e.getMessage());
-            Assert.fail();;
         }
     }
 
@@ -53,28 +52,22 @@ public class JsonParserTest {
     public void testLoadJsonResources() {
         try {
             File dataFile = getFileResource("data.json");
-            JsonObject dataRootObject = getJsonObject(dataFile);
+            JsonObject dataRootObject = getJsonObjectFromFile(dataFile);
             File constraintsFile = getFileResource("constraints.json");
-            JsonObject constraintsRootObject = getJsonObject(constraintsFile);
-        } catch (NullPointerException e) {
-            System.out.println("NullPointerException : " + e.getMessage());
-            Assert.fail();
-        } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException : " + e.getMessage());
+            JsonObject constraintsRootObject = getJsonObjectFromFile(constraintsFile);
+        }  catch (Exception e) {
+            handleException(e);
             Assert.fail();
         }
     }
 
     @Test
-    public void testGetNullJsonObject() {
+    public void testGetNullJsonResource() {
         try {
             File dataFile = getFileResource("null.json");
-            JsonObject dataRootObject = getJsonObject(dataFile);
             Assert.fail();
-        } catch (NullPointerException e) {
-            System.out.println("NullPointerException : " + e.getMessage());
-        } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException : " + e.getMessage());
+        } catch (Exception e) {
+            handleException(e);
         }
     }
 
@@ -82,20 +75,54 @@ public class JsonParserTest {
     public void testLoopOverDataEntrySet() {
         try {
             File dataFile = getFileResource("data.json");
-            JsonObject dataRootObject = getJsonObject(dataFile);
+            JsonObject dataRootObject = getJsonObjectFromFile(dataFile);
             Set<Map.Entry<String, JsonElement>> entrySet = dataRootObject.entrySet();
             Assert.assertEquals(entrySet.size(), 3);
             for (Map.Entry<String, JsonElement> entry : entrySet) {
                 Assert.assertNotEquals(entry.getValue(), null);
             }
-        } catch (NullPointerException e) {
-            System.out.println("NullPointerException : " + e.getMessage());
+        } catch (Exception e) {
+            handleException(e);
             Assert.fail();
-        } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException : " + e.getMessage());
-            Assert.fail();
-        } catch (JsonParseException e) {
-            System.out.println("JsonParseException : " + e.getMessage());
+        }
+    }
+
+    private Set<Map.Entry<String, JsonObject>> getJsonObjects(JsonObject e) {
+        Set<Map.Entry<String, JsonElement>> rawEntrySet = e.entrySet();
+        Set<Map.Entry<String, JsonObject>> jsonObjectsEntrySet = new HashSet<>();
+        for (Map.Entry<String, JsonElement> entry : rawEntrySet) {
+            if (entry.getValue().isJsonObject()) {
+                jsonObjectsEntrySet.add(new AbstractMap.SimpleEntry<>(entry.getKey(), (JsonObject) entry.getValue()));
+            }
+        }
+        return jsonObjectsEntrySet;
+    }
+
+    private void recursive(JsonObject o) {
+        if (o.has("properties")) {
+            JsonObject properties = o.get("properties").getAsJsonObject();
+            Set<Map.Entry<String, JsonObject>> entrySet = getJsonObjects(properties);
+            for (Map.Entry<String, JsonObject> entry : entrySet) {
+                JsonObject prop = entry.getValue();
+                System.out.println(entry.getKey());
+                if (prop.has("constraints")) {
+                    System.out.println(prop.get("constraints").getAsJsonArray().toString());
+                }
+                recursive(prop);
+            }
+        }
+    }
+
+    @Test
+    public void testGatherConstraints() {
+        try {
+            File constraintsFile = getFileResource("constraints.json");
+            JsonObject cons_rootObject = getJsonObjectFromFile(constraintsFile);
+
+            recursive(cons_rootObject);
+
+        } catch (Exception e) {
+            handleException(e);
             Assert.fail();
         }
     }
