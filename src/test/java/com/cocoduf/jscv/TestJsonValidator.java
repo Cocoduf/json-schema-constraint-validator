@@ -1,5 +1,8 @@
 package com.cocoduf.jscv;
 
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +25,7 @@ public class TestJsonValidator {
     }
 
     @Test
-    public void testValidateJson() {
+    public void testValidateJsonSuccess() {
         JsonValidator jsonValidator = new JsonValidator();
         try {
 
@@ -33,29 +36,26 @@ public class TestJsonValidator {
     }
 
     @Test
-    public void testSetSchemaNullFile() {
+    public void testValidateJsonFailure() {
         JsonValidator jsonValidator = new JsonValidator();
         try {
 
-            jsonValidator.setSchema(new File("irrelevant"));
-            Assert.assertEquals(true, false);
+            jsonValidator.setSchema(getFileResource("constraints.json"));
+            Assert.assertEquals(false, jsonValidator.validateJson(getFileResource("irrelevant.json")));
 
-        } catch(Exception e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
-        }
+        } catch(Exception e) {}
     }
 
-    @Test
-    public void testSetSchemaInvalidJson() {
+    @Test(expected = FileNotFoundException.class)
+    public void testSetSchemaFileNotFound() throws Exception {
         JsonValidator jsonValidator = new JsonValidator();
-        try {
+        jsonValidator.setSchema(new File(""));
+    }
 
-            jsonValidator.setSchema(getFileResource("invalid.json"));
-            Assert.assertEquals(true, false);
-
-        } catch(Exception e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
-        }
+    @Test(expected = JsonParseException.class)
+    public void testSetSchemaMalformedJson() throws Exception {
+        JsonValidator jsonValidator = new JsonValidator();
+        jsonValidator.setSchema(getFileResource("malformed.json"));
     }
 
 }

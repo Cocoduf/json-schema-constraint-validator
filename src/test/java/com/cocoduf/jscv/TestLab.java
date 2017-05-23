@@ -41,7 +41,7 @@ public class TestLab {
         try {
             File schemaFile = getFileResource("constraints.json");
             File jsonFile = getFileResource("data.json");
-            Assert.assertEquals(true, TestValidationUtils.isJsonValid(schemaFile, jsonFile));
+            Assert.assertEquals(true, ValidationUtils.isJsonValid(schemaFile, jsonFile));
         } catch (Exception e) {
             handleException(e);
             Assert.fail();

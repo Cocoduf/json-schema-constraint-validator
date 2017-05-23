@@ -26,7 +26,7 @@ public class JsonValidator {
      */
     public void setSchema(String schemaText) throws JsonParseException {
         this.schemaText = schemaText;
-        this.schemaRootObject = new JsonParser().parse(this.schemaText).getAsJsonObject();
+        this.schemaRootObject = getJsonObjectFromText(this.schemaText);
     }
 
     /**
@@ -69,17 +69,17 @@ public class JsonValidator {
         return validateJson(getJsonTextFromFile(jsonFile));
     }
 
+    /******************************************************************************************************************/
+
     /**
      *
      * @param schemaText
      * @param jsonText
      * @return whether the constraints validation has been successful.
      */
-    public boolean validateConstraints(String schemaText, String jsonText) {
-        return new ConstraintsValidator(getJsonObjectFromText(schemaText)).isJsonValid(getJsonObjectFromText(jsonText));
+    private boolean validateConstraints(String schemaText, String jsonText) {
+        return new ConstraintsValidator(schemaRootObject).isJsonValid(getJsonObjectFromText(jsonText));
     }
-
-    /******************************************************************************************************************/
 
     /**
      *
