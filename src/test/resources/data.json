@@ -1,5 +1,9 @@
 {
 	"price": 750,
 	"amountPaid": 1000,
-	"change": 250
+	"change": 250,
+	"person": {
+		"firstName": "Jean",
+		"lastName": "Jeanne"
+	}
 }

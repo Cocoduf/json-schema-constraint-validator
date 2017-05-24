@@ -77,7 +77,6 @@ public class TestLab {
             File dataFile = getFileResource("data.json");
             JsonObject dataRootObject = getJsonObjectFromFile(dataFile);
             Set<Map.Entry<String, JsonElement>> entrySet = dataRootObject.entrySet();
-            Assert.assertEquals(entrySet.size(), 3);
             for (Map.Entry<String, JsonElement> entry : entrySet) {
                 Assert.assertNotEquals(entry.getValue(), null);
             }

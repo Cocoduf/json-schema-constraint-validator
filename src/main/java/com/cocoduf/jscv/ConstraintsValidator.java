@@ -35,33 +35,42 @@ public class ConstraintsValidator {
     }
 
     private void generateConstraints() {
-        recursiveConstraintsBrowsing(schemaRootObject);
+        recursiveConstraintsBrowsing(schemaRootObject, new JsonPointer("#"));
     }
 
-    private void makeConstraintsFromJson(String field, JsonArray constraints) {
-        for (JsonElement constraint : constraints) {
-            // json to pojo
-        }
-    }
+    private void makeConstraintsFromJson(JsonPointer sourceFieldPath, JsonArray jsonConstraints) throws IllegalArgumentException {
+        for (JsonElement constraintElement : jsonConstraints) {
+            if (constraintElement.isJsonObject()) {
 
-    private void recursiveConstraintsBrowsing(JsonObject o) {
-        if (o.has("properties")) {
-            JsonObject properties = o.get("properties").getAsJsonObject();
-            Set<Map.Entry<String, JsonObject>> entrySet = filterJsonObjectsOnly(properties);
-            for (Map.Entry<String, JsonObject> entry : entrySet) {
-                JsonObject property = entry.getValue();
+                JsonObject constraintObject = (JsonObject) constraintElement;
 
-                if (property.has("constraints")) {
-                    JsonArray constraints = property.get("constraints").getAsJsonArray();
-                    makeConstraintsFromJson(entry.getKey(), constraints);
-                }
-
-                recursiveConstraintsBrowsing(property);
+            } else {
+                throw new IllegalArgumentException("Erreur de syntaxe dans " + sourceFieldPath.toString() + ".constraints");
             }
         }
     }
 
-    private Set<Map.Entry<String, JsonObject>> filterJsonObjectsOnly(JsonObject e) {
+    private void recursiveConstraintsBrowsing(JsonObject o, JsonPointer currentPath) {
+        if (o.has("properties")) {
+            JsonObject properties = o.get("properties").getAsJsonObject();
+            Set<Map.Entry<String, JsonObject>> entrySet = filterJsonObjectsEntriesOnly(properties);
+            for (Map.Entry<String, JsonObject> entry : entrySet) {
+                JsonObject property = entry.getValue();
+                currentPath.push(entry.getKey());
+
+                if (property.has("constraints")) {
+                    JsonArray constraints = property.get("constraints").getAsJsonArray();
+                    makeConstraintsFromJson(currentPath, constraints);
+                }
+
+                System.out.println(currentPath);
+                recursiveConstraintsBrowsing(property, currentPath);
+                currentPath.pop();
+            }
+        }
+    }
+
+    private Set<Map.Entry<String, JsonObject>> filterJsonObjectsEntriesOnly(JsonObject e) {
         Set<Map.Entry<String, JsonElement>> rawEntrySet = e.entrySet();
         Set<Map.Entry<String, JsonObject>> jsonObjectsEntrySet = new HashSet<>();
         for (Map.Entry<String, JsonElement> entry : rawEntrySet) {

@@ -1,67 +1,42 @@
 package com.cocoduf.jscv;
 
-import java.util.ArrayList;
-
 /**
  * Created by cocoduf on 17-05-17.
  */
 public class Constraint {
-    private String field;
-    private ConstraintType type;
-    private String target;
+    private ConstraintCore core;
+    private String sourceField;
+    private String targetField;
 
-    public String getField() {
-        return field;
+    Constraint(String typeName, String sourceField, String target) {
+
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public String getSourceField() {
+        return sourceField;
     }
 
-    public ConstraintType getType() {
-        return type;
+    public void setSourceField(String sourceField) {
+        this.sourceField = sourceField;
     }
 
-    public void setType(ConstraintType type) {
-        this.type = type;
+    public ConstraintCore getCore() {
+        return core;
     }
 
-    public void setType(String type) {
-        this.type = ConstraintType.get(type);
+    public void setCore(ConstraintCore core) {
+        this.core = core;
     }
 
-    public String getTarget() {
-        return target;
+    public void setCore(String typeName) {
+        this.core = ConstraintDictionary.getConstraintCoreFromTypeName(typeName);
     }
 
-    public void setTarget(String target) {
-        this.target = target;
+    public String getTargetField() {
+        return targetField;
     }
-}
 
-enum ConstraintType {
-    requiredIfNull,
-    requiredIfnotNull,
-    requiredIfTrue,
-    requiredIfFalse,
-    valueEqualTo,
-    valueNotEqualTo,
-    valueGreaterThan,
-    valueGreaterThanOrEqualTo,
-    valueLesserThan,
-    valueLesserThanOrEqualTo,
-    lengthEqualTo,
-    lengthNotEqualTo,
-    lengthGreaterThan,
-    lengthGreaterThanOrEqualTo,
-    lengthLesserThan,
-    lengthLesserThanOrEqualTo,
-    inArray,
-    notInArray,
-    priorTo,
-    subsequentTo;
-
-    public static ConstraintType get(String text) {
-        return ConstraintType.valueOf(text);
+    public void setTargetField(String targetField) {
+        this.targetField = targetField;
     }
 }
