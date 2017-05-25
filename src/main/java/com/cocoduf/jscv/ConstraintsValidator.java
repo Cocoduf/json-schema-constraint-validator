@@ -43,6 +43,7 @@ public class ConstraintsValidator {
             if (constraintElement.isJsonObject()) {
 
                 JsonObject constraintObject = (JsonObject) constraintElement;
+                // json to pojo
 
             } else {
                 throw new IllegalArgumentException("Erreur de syntaxe dans " + sourceFieldPath.toString() + ".constraints");

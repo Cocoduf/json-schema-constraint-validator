@@ -16,6 +16,7 @@ import java.util.Set;
  */
 public class TestLab {
 
+    /*
     private File getFileResource(String fileName) throws FileNotFoundException {
         URL fileUrl = getClass().getClassLoader().getResource(fileName);
         if (fileUrl != null) {
@@ -125,4 +126,6 @@ public class TestLab {
             Assert.fail();
         }
     }
+
+    */
 }

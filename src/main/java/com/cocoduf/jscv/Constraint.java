@@ -5,19 +5,29 @@ package com.cocoduf.jscv;
  */
 public class Constraint {
     private ConstraintCore core;
-    private String sourceField;
-    private String targetField;
+    private JsonPointer sourceField;
+    private JsonPointer targetField;
 
-    Constraint(String typeName, String sourceField, String target) {
-
+    Constraint(String typeName, JsonPointer sourceField, JsonPointer targetField) {
+        setSourceField(sourceField);
+        setTargetField(targetField);
+        setCore(typeName);
     }
 
-    public String getSourceField() {
+    public JsonPointer getSourceField() {
         return sourceField;
     }
 
-    public void setSourceField(String sourceField) {
+    public void setSourceField(JsonPointer sourceField) {
         this.sourceField = sourceField;
+    }
+
+    public JsonPointer getTargetField() {
+        return targetField;
+    }
+
+    public void setTargetField(JsonPointer targetField) {
+        this.targetField = targetField;
     }
 
     public ConstraintCore getCore() {
@@ -30,13 +40,5 @@ public class Constraint {
 
     public void setCore(String typeName) {
         this.core = ConstraintDictionary.getConstraintCoreFromTypeName(typeName);
-    }
-
-    public String getTargetField() {
-        return targetField;
-    }
-
-    public void setTargetField(String targetField) {
-        this.targetField = targetField;
     }
 }
