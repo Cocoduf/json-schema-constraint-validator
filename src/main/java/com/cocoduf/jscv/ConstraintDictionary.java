@@ -1,5 +1,8 @@
 package com.cocoduf.jscv;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.util.Map;
 
 /**
@@ -25,7 +28,10 @@ public class ConstraintDictionary {
         cores.put(ConstraintType.requiredIfNull, new ConstraintCore(
                 array("boolean","number","string","array","object"),
                 array("boolean","number","string","array","object")) {
-
+            @Override
+            public boolean isDataValid(JsonObject source, JsonObject target) {
+                return false;
+            }
         });
     }
 
@@ -33,6 +39,32 @@ public class ConstraintDictionary {
         return args;
     }
 
+    /**********************THIS IS WRONG :) THIS IS WRONG :) THIS IS WRONG*********************************************/
+
+    public static class ConstraintCore {
+        private String[] allowedSourceFieldTypes;
+        private String[] allowedTargetFieldTypes;
+        private String requiredFormat;
+
+        public ConstraintCore(String[] sourceTypes, String[] targetTypes) {
+            this.allowedSourceFieldTypes = sourceTypes;
+            this.allowedTargetFieldTypes = targetTypes;
+        }
+
+        boolean isDataValid(Boolean source, Boolean target) { return false; };
+        boolean isDataValid(Float source, Float target) { return false; };
+        boolean isDataValid(String source, String target) { return false; };
+        boolean isDataValid(JsonArray source, JsonArray target) { return false; };
+        boolean isDataValid(JsonObject source, JsonObject target) { return false; };
+
+        private boolean verifyFieldsValidity(JsonObject source, JsonObject target) {
+            return false;
+        }
+        public boolean check(JsonObject source, JsonObject target) {
+            return verifyFieldsValidity(source, target)
+                    && isDataValid(source, target);
+        }
+    }
 }
 
 enum ConstraintType {

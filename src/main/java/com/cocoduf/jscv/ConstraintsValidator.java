@@ -3,6 +3,7 @@ package com.cocoduf.jscv;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.*;
 
@@ -26,25 +27,40 @@ public class ConstraintsValidator {
     public void setSchema(JsonObject schemaRootObject) {
         this.schemaRootObject = schemaRootObject;
         this.constraints.clear();
-        generateConstraints();
+        buildConstraints();
     }
 
     public boolean isJsonValid(JsonObject dataRootObject) {
         this.dataRootObject = dataRootObject;
-        return true;
+        return validateData();
     }
 
-    private void generateConstraints() {
+    /******************************************************************************************************************/
+
+    private boolean validateData() {
+        for (Constraint c : constraints) {
+
+        }
+
+        return false;
+    }
+
+    private void buildConstraints() {
         recursiveConstraintsBrowsing(schemaRootObject, new JsonPointer("#"));
     }
 
-    private void makeConstraintsFromJson(JsonPointer sourceFieldPath, JsonArray jsonConstraints) throws IllegalArgumentException {
+    private void makeConstraintsFromJson(JsonArray jsonConstraints, JsonPointer sourceFieldPath, String sourceFieldType) throws IllegalArgumentException {
         for (JsonElement constraintElement : jsonConstraints) {
             if (constraintElement.isJsonObject()) {
+                JsonObject constraintObject = constraintElement.getAsJsonObject();
+                if (constraintObject.has(KEY_CONSTRAINT_TYPE) && constraintObject.has(KEY_TARGET_FIELD)) {
 
-                JsonObject constraintObject = (JsonObject) constraintElement;
-                // json to pojo
+                    Constraint c = new Constraint(constraintObject.get(KEY_CONSTRAINT_TYPE).getAsString(), sourceFieldType, sourceFieldPath, new JsonPointer(constraintObject.get(KEY_TARGET_FIELD).getAsString()));
+                    constraints.add(c);
 
+                } else {
+                    throw new IllegalArgumentException("Contrainte incomplète dans " + sourceFieldPath.toString() + ".constraints");
+                }
             } else {
                 throw new IllegalArgumentException("Erreur de syntaxe dans " + sourceFieldPath.toString() + ".constraints");
             }
@@ -61,7 +77,7 @@ public class ConstraintsValidator {
 
                 if (property.has("constraints")) {
                     JsonArray constraints = property.get("constraints").getAsJsonArray();
-                    makeConstraintsFromJson(currentPath, constraints);
+                    makeConstraintsFromJson(constraints, currentPath, property.get("type").getAsString());
                 }
 
                 System.out.println(currentPath);
@@ -76,7 +92,7 @@ public class ConstraintsValidator {
         Set<Map.Entry<String, JsonObject>> jsonObjectsEntrySet = new HashSet<>();
         for (Map.Entry<String, JsonElement> entry : rawEntrySet) {
             if (entry.getValue().isJsonObject()) {
-                jsonObjectsEntrySet.add(new AbstractMap.SimpleEntry<>(entry.getKey(), (JsonObject) entry.getValue()));
+                jsonObjectsEntrySet.add(new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue().getAsJsonObject()));
             }
         }
         return jsonObjectsEntrySet;

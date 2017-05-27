@@ -33,7 +33,9 @@
 		"person": {
 			"type": "object",
 			"properties": {
-				"firstName": "",
+				"firstName": {
+					"type": "string"
+				},
 				"lastName": {
 					"type": "string"
 				}
