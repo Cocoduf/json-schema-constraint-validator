@@ -3,7 +3,6 @@ package com.cocoduf.jscv;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 
 import java.util.*;
 
@@ -32,17 +31,42 @@ public class ConstraintsValidator {
 
     public boolean isJsonValid(JsonObject dataRootObject) {
         this.dataRootObject = dataRootObject;
-        return validateData();
+        return isDataValid();
     }
 
     /******************************************************************************************************************/
 
-    private boolean validateData() {
-        for (Constraint c : constraints) {
-
+    private boolean isDataValid() {
+        boolean valid = true;
+        for (Constraint constraint : constraints) {
+            valid = valid && ConstraintDictionary.isDataValid(
+                    constraint,
+                    getJsonElementFromPath(constraint.getSourceField()),
+                    getJsonElementFromPath(constraint.getTargetField())
+            );
         }
+        return valid;
+    }
 
-        return false;
+    private JsonElement getJsonElementFromPath(JsonPointer path) {
+        JsonObject property = null;
+        JsonElement value = null;
+        String node;
+        String[] nodes = path.toArray();
+        for (int i = 0; i < nodes.length; i++) {
+            node = nodes[i];
+
+            if (node.equals("#")) {
+                property = dataRootObject;
+            } else if (property != null) {
+                if (i == nodes.length + 1) {
+                    property = property.get(node).getAsJsonObject();
+                } else {
+                    value = property.get(node);
+                }
+            }
+        }
+        return value;
     }
 
     private void buildConstraints() {

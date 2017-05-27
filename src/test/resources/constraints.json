@@ -3,32 +3,13 @@
 	"title": "Transaction",
 	"type": "object",
 	"properties": {
-		"price": {
+		"largerNumber": {
 			"type": "number",
 			"minimum": 0
 		},
-		"amountPaid": {
+		"smallerNumber": {
 			"type": "number",
-			"minimum": 0,
-			"constraints": [
-				{
-					"type": "valueGreaterThanOrEqualTo",
-					"target": "#/price"
-				}
-			]
-		},
-		"change": {
-			"type": "number",
-			"minimum": 0,
-			"constraints": [
-				{
-					"type": "valueEqualTo",
-					"target": "#/amountPaid",
-					"options": {
-						"subtract": ["#/price"]
-					}
-				}
-			]
+			"minimum": 0
 		},
 		"person": {
 			"type": "object",
@@ -42,5 +23,5 @@
 			}
 		}
 	},
-	"required" : ["price","amountPaid","change"]
+	"required" : ["largerNumber","smallerNumber"]
 }

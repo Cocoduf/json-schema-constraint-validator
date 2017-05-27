@@ -1,29 +1,27 @@
 package com.cocoduf.jscv;
 
-import com.google.gson.JsonObject;
-
 /**
  * Created by cocoduf on 17-05-17.
  */
 public class Constraint {
     private ConstraintType type;
-    private String sourceFieldType;
+    private String fieldsType;
     private JsonPointer sourceField;
     private JsonPointer targetField;
 
     Constraint(String typeName, String sourceFieldType, JsonPointer sourceField, JsonPointer targetField) {
         setType(typeName);
-        this.sourceFieldType = sourceFieldType;
+        this.fieldsType = sourceFieldType;
         this.sourceField = sourceField;
         this.targetField = targetField;
     }
 
-    public String getSourceFieldType() {
-        return sourceFieldType;
+    public String getFieldsType() {
+        return fieldsType;
     }
 
-    public void setSourceFieldType(String sourceFieldType) {
-        this.sourceFieldType = sourceFieldType;
+    public void setFieldsType(String fieldsType) {
+        this.fieldsType = fieldsType;
     }
 
     public JsonPointer getSourceField() {

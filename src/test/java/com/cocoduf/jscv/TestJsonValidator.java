@@ -36,7 +36,7 @@ public class TestJsonValidator {
     }
 
     @Test
-    public void testValidateJsonFailure() {
+    public void testValidateJsonFailureIrreleventData() {
         JsonValidator jsonValidator = new JsonValidator();
         try {
 
@@ -44,6 +44,17 @@ public class TestJsonValidator {
             Assert.assertEquals(false, jsonValidator.validateJson(getFileResource("irrelevant.json")));
 
         } catch(Exception e) {}
+    }
+
+    @Test
+    public void testValidateJsonFailureWrongData() {
+        JsonValidator jsonValidator = new JsonValidator();
+        try {
+
+            jsonValidator.setSchema(getFileResource("constraints.json"));
+            Assert.assertEquals(false, jsonValidator.validateJson(getFileResource("wrong_data.json")));
+
+        } catch (Exception e) {}
     }
 
     @Test(expected = FileNotFoundException.class)

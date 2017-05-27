@@ -1,7 +1,6 @@
 {
-	"price": 750,
-	"amountPaid": 1000,
-	"change": 250,
+	"largerNumber": 100,
+	"smallerNumber": 1,
 	"person": {
 		"firstName": "Jean",
 		"lastName": "Jeanne"

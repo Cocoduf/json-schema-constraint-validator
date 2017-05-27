@@ -1,5 +1,6 @@
 package com.cocoduf.jscv;
 
+import javax.annotation.Nonnull;
 import java.util.Stack;
 
 /**
@@ -16,14 +17,18 @@ public class JsonPointer extends Stack<String> {
     }
 
     public JsonPointer(String path) {
-        String[] nodes = path.split("/");
-        for (String node : nodes) {
+        for (String node : path.split("/")) {
             this.push(node);
         }
     }
 
     public String toString() {
         return String.join("/", this);
+    }
+
+    @Nonnull
+    public String[] toArray() {
+        return toString().split("/");
     }
 
 }
