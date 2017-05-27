@@ -1,8 +1,4 @@
 {
-	"firstumber": 1,
-	"secondNumber": 100,
-	"person": {
-		"firstName": "Jean",
-		"lastName": "Jeanne"
-	}
+	"firstNumber": 1,
+	"secondNumber": 100
 }

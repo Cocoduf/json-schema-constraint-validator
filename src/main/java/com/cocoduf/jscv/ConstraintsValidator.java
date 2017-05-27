@@ -43,7 +43,7 @@ public class ConstraintsValidator {
         System.out.println("LOG> ConstraintsValidator.isDataValid");
         boolean valid = true;
         for (Constraint constraint : constraints) {
-            System.out.println("LOG> ConstraintsValidator.isDataValid+");
+            System.out.println("LOG> " + constraint);
             valid = valid && ConstraintDictionary.isDataValid(
                     constraint,
                     getJsonElementFromPath(constraint.getSourceField()),
@@ -54,6 +54,7 @@ public class ConstraintsValidator {
     }
 
     private JsonElement getJsonElementFromPath(JsonPointer path) {
+        System.out.println("LOG> ConstraintValidator.getJsonElementFromPath " + path);
         JsonObject property = null;
         JsonElement value = null;
         String node;
@@ -79,8 +80,8 @@ public class ConstraintsValidator {
     }
 
     private void makeConstraintsFromJson(JsonArray jsonConstraints, JsonPointer sourceFieldPath, String sourceFieldType) throws IllegalArgumentException {
+        System.out.println("LOG> ConstraintsValidator.makeConstraintsFromJson");
         for (JsonElement constraintElement : jsonConstraints) {
-            System.out.println("LOG> ConstraintsValidator.buildConstraints+");
             if (constraintElement.isJsonObject()) {
                 JsonObject constraintObject = constraintElement.getAsJsonObject();
                 if (constraintObject.has(KEY_CONSTRAINT_TYPE) && constraintObject.has(KEY_TARGET_FIELD)) {
@@ -88,7 +89,7 @@ public class ConstraintsValidator {
                     Constraint c = new Constraint(constraintObject.get(KEY_CONSTRAINT_TYPE).getAsString(), sourceFieldType,
                             sourceFieldPath, new JsonPointer(constraintObject.get(KEY_TARGET_FIELD).getAsString()));
                     constraints.add(c);
-                    System.out.println("LOG> " + c.getType());
+                    System.out.println("LOG> " + c);
 
                 } else {
                     throw new IllegalArgumentException("Contrainte incomplète dans " + sourceFieldPath.toString() + ".constraints");
@@ -100,17 +101,18 @@ public class ConstraintsValidator {
     }
 
     private void recursiveConstraintsBrowsing(JsonObject o, JsonPointer currentPath) throws IllegalArgumentException {
+        System.out.println("LOG> ConstraintsValidator.recursiveConstraintsBrowsing");
         if (o.has("properties")) {
             JsonObject properties = o.get("properties").getAsJsonObject();
             Set<Map.Entry<String, JsonObject>> entrySet = filterJsonObjectsEntriesOnly(properties);
             for (Map.Entry<String, JsonObject> entry : entrySet) {
                 JsonObject property = entry.getValue();
                 currentPath.push(entry.getKey());
-                System.out.println("LOG> " + currentPath);
+                System.out.println("LOG> browsing " + currentPath);
 
                 if (property.has("constraints")) {
                     JsonArray constraints = property.get("constraints").getAsJsonArray();
-                    makeConstraintsFromJson(constraints, currentPath, property.get("type").getAsString());
+                    makeConstraintsFromJson(constraints, new JsonPointer(currentPath), property.get("type").getAsString());
                 }
 
                 recursiveConstraintsBrowsing(property, currentPath);
