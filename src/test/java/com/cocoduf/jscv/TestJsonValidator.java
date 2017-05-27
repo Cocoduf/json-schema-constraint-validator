@@ -29,10 +29,12 @@ public class TestJsonValidator {
         JsonValidator jsonValidator = new JsonValidator();
         try {
 
-            jsonValidator.setSchema(getFileResource("constraints.json"));
-            Assert.assertEquals(true, jsonValidator.validateJson(getFileResource("data.json")));
+            jsonValidator.setSchema(getFileResource("schemas/constraints.json"));
+            Assert.assertEquals(true, jsonValidator.validateJson(getFileResource("data/data.json")));
 
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            System.out.println(e);
+        }
     }
 
     @Test
@@ -40,10 +42,12 @@ public class TestJsonValidator {
         JsonValidator jsonValidator = new JsonValidator();
         try {
 
-            jsonValidator.setSchema(getFileResource("constraints.json"));
-            Assert.assertEquals(false, jsonValidator.validateJson(getFileResource("irrelevant.json")));
+            jsonValidator.setSchema(getFileResource("schemas/constraints.json"));
+            Assert.assertEquals(false, jsonValidator.validateJson(getFileResource("data/irrelevant.json")));
 
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            System.out.println(e);
+        }
     }
 
     @Test
@@ -51,10 +55,25 @@ public class TestJsonValidator {
         JsonValidator jsonValidator = new JsonValidator();
         try {
 
-            jsonValidator.setSchema(getFileResource("constraints.json"));
-            Assert.assertEquals(false, jsonValidator.validateJson(getFileResource("wrong_data.json")));
+            jsonValidator.setSchema(getFileResource("schemas/constraints.json"));
+            Assert.assertEquals(false, jsonValidator.validateJson(getFileResource("data/wrong_data.json")));
 
-        } catch (Exception e) {}
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void testValidateJsonFailureUnknownConstraint() {
+        JsonValidator jsonValidator = new JsonValidator();
+        try {
+
+            jsonValidator.setSchema(getFileResource("schemas/unknown.json"));
+            Assert.assertEquals(false, jsonValidator.validateJson(getFileResource("data/data.json")));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
     }
 
     @Test(expected = FileNotFoundException.class)
@@ -66,7 +85,7 @@ public class TestJsonValidator {
     @Test(expected = JsonParseException.class)
     public void testSetSchemaMalformedJson() throws Exception {
         JsonValidator jsonValidator = new JsonValidator();
-        jsonValidator.setSchema(getFileResource("malformed.json"));
+        jsonValidator.setSchema(getFileResource("data/malformed.json"));
     }
 
 }

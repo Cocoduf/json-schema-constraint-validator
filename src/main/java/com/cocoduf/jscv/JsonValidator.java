@@ -50,9 +50,10 @@ public class JsonValidator {
      * @throws IOException
      */
     public boolean validateJson(String jsonText) throws IllegalStateException, ProcessingException, IOException {
+        System.out.println("LOG> JsonValidator.validateJson");
         if (schemaText != null) {
             {
-                return ValidationUtils.isJsonValid(schemaText, jsonText) && validateConstraints(schemaText, jsonText);
+                return ValidationUtils.isJsonValid(schemaText, jsonText) && validateConstraints(jsonText);
             }
         } else {
             throw new IllegalStateException("Missing schema.");
@@ -75,11 +76,11 @@ public class JsonValidator {
 
     /**
      *
-     * @param schemaText
      * @param jsonText
      * @return whether the constraints validation has been successful.
      */
-    private boolean validateConstraints(String schemaText, String jsonText) {
+    private boolean validateConstraints(String jsonText) {
+        System.out.println("LOG> JsonValidator.validateConstraints");
         return validator.isJsonValid(getJsonObjectFromText(jsonText));
     }
 

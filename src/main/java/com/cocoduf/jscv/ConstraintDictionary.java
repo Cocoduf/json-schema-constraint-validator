@@ -36,12 +36,13 @@ public class ConstraintDictionary {
     /******************************************************************************************************************/
 
     private static void generateCores() {
-        cores.put(ConstraintType.requiredIfNull, new ConstraintCore(
+        cores.put(ConstraintType.valueEqualTo, new ConstraintCore(
                 array("boolean","number","string","array","object"),
                 array("boolean","number","string","array","object")) {
             @Override
-            public boolean isDataValid(JsonObject source, JsonObject target) {
-                return false;
+            public boolean isDataValid(Float source, Float target) {
+                System.out.println("LOG> ConstraintCore.isDataValid");
+                return source.equals(target);
             }
         });
     }

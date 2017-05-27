@@ -1,6 +1,6 @@
 {
-	"largerNumber": 100,
-	"smallerNumber": 1,
+	"firstNumber": 1,
+	"secondNumber": 1,
 	"person": {
 		"firstName": "Jean",
 		"lastName": "Jeanne"

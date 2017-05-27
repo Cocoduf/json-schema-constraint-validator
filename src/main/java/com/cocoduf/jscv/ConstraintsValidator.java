@@ -19,17 +19,20 @@ public class ConstraintsValidator {
     private ArrayList<Constraint> constraints;
 
     public ConstraintsValidator(JsonObject schemaRootObject) {
+        System.out.println("LOG> ConstraintsValidator()");
         this.constraints = new ArrayList<>();
         setSchema(schemaRootObject);
     }
 
-    public void setSchema(JsonObject schemaRootObject) {
+    public void setSchema(JsonObject schemaRootObject) throws IllegalArgumentException {
+        System.out.println("LOG> ConstraintsValidator.setSchema");
         this.schemaRootObject = schemaRootObject;
         this.constraints.clear();
         buildConstraints();
     }
 
     public boolean isJsonValid(JsonObject dataRootObject) {
+        System.out.println("LOG> ConstraintsValidator.isJsonValid");
         this.dataRootObject = dataRootObject;
         return isDataValid();
     }
@@ -37,8 +40,10 @@ public class ConstraintsValidator {
     /******************************************************************************************************************/
 
     private boolean isDataValid() {
+        System.out.println("LOG> ConstraintsValidator.isDataValid");
         boolean valid = true;
         for (Constraint constraint : constraints) {
+            System.out.println("LOG> ConstraintsValidator.isDataValid+");
             valid = valid && ConstraintDictionary.isDataValid(
                     constraint,
                     getJsonElementFromPath(constraint.getSourceField()),
@@ -69,18 +74,21 @@ public class ConstraintsValidator {
         return value;
     }
 
-    private void buildConstraints() {
+    private void buildConstraints() throws IllegalArgumentException {
         recursiveConstraintsBrowsing(schemaRootObject, new JsonPointer("#"));
     }
 
     private void makeConstraintsFromJson(JsonArray jsonConstraints, JsonPointer sourceFieldPath, String sourceFieldType) throws IllegalArgumentException {
         for (JsonElement constraintElement : jsonConstraints) {
+            System.out.println("LOG> ConstraintsValidator.buildConstraints+");
             if (constraintElement.isJsonObject()) {
                 JsonObject constraintObject = constraintElement.getAsJsonObject();
                 if (constraintObject.has(KEY_CONSTRAINT_TYPE) && constraintObject.has(KEY_TARGET_FIELD)) {
 
-                    Constraint c = new Constraint(constraintObject.get(KEY_CONSTRAINT_TYPE).getAsString(), sourceFieldType, sourceFieldPath, new JsonPointer(constraintObject.get(KEY_TARGET_FIELD).getAsString()));
+                    Constraint c = new Constraint(constraintObject.get(KEY_CONSTRAINT_TYPE).getAsString(), sourceFieldType,
+                            sourceFieldPath, new JsonPointer(constraintObject.get(KEY_TARGET_FIELD).getAsString()));
                     constraints.add(c);
+                    System.out.println("LOG> " + c.getType());
 
                 } else {
                     throw new IllegalArgumentException("Contrainte incomplète dans " + sourceFieldPath.toString() + ".constraints");
@@ -91,20 +99,20 @@ public class ConstraintsValidator {
         }
     }
 
-    private void recursiveConstraintsBrowsing(JsonObject o, JsonPointer currentPath) {
+    private void recursiveConstraintsBrowsing(JsonObject o, JsonPointer currentPath) throws IllegalArgumentException {
         if (o.has("properties")) {
             JsonObject properties = o.get("properties").getAsJsonObject();
             Set<Map.Entry<String, JsonObject>> entrySet = filterJsonObjectsEntriesOnly(properties);
             for (Map.Entry<String, JsonObject> entry : entrySet) {
                 JsonObject property = entry.getValue();
                 currentPath.push(entry.getKey());
+                System.out.println("LOG> " + currentPath);
 
                 if (property.has("constraints")) {
                     JsonArray constraints = property.get("constraints").getAsJsonArray();
                     makeConstraintsFromJson(constraints, currentPath, property.get("type").getAsString());
                 }
 
-                System.out.println(currentPath);
                 recursiveConstraintsBrowsing(property, currentPath);
                 currentPath.pop();
             }

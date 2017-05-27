@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Transaction",
+  "type": "object",
+  "properties": {
+    "firstNumber": {
+      "type": "number",
+      "minimum": 0,
+      "constraints": [
+        {
+          "type": "UNKNOWN",
+          "target": "#/secondNumber"
+        }
+      ]
+    },
+    "secondNumber": {
+      "type": "number",
+      "minimum": 0
+    },
+    "person": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required" : ["firstNumber","secondNumber"]
+}

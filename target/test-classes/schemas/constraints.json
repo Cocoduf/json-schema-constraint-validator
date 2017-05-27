@@ -3,13 +3,25 @@
 	"title": "Transaction",
 	"type": "object",
 	"properties": {
-		"largerNumber": {
+		"firstNumber": {
 			"type": "number",
-			"minimum": 0
+			"minimum": 0,
+			"constraints": [
+				{
+					"type": "valueEqualTo",
+					"target": "#/secondNumber"
+				}
+			]
 		},
-		"smallerNumber": {
+		"secondNumber": {
 			"type": "number",
-			"minimum": 0
+			"minimum": 0,
+			"constraints": [
+				{
+					"type": "valueEqualTo",
+					"target": "#/firstNumber"
+				}
+			]
 		},
 		"person": {
 			"type": "object",
@@ -23,5 +35,5 @@
 			}
 		}
 	},
-	"required" : ["largerNumber","smallerNumber"]
+	"required" : ["firstNumber","secondNumber"]
 }
