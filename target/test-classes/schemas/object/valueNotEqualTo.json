@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Data",
+  "type": "object",
+  "properties": {
+    "a": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "string"
+        },
+        "b": {
+          "type": "string"
+        }
+      },
+      "constraints": [
+        {
+          "type": "valueNotEqualTo",
+          "target": "#/c"
+        }
+      ]
+    },
+    "c": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "string"
+        },
+        "b": {
+          "type": "string"
+        }
+      },
+      "constraints": [
+        {
+          "type": "valueNotEqualTo",
+          "target": "#/a"
+        }
+      ]
+    }
+  }
+}

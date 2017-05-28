@@ -40,8 +40,8 @@ public class TestLab {
     @Test
     public void testJsonSchemaValidator() {
         try {
-            File schemaFile = getFileResource("constraints.json");
-            File jsonFile = getFileResource("data.json");
+            File schemaFile = getFileResource("irrelevent.json");
+            File jsonFile = getFileResource("unkown_type.json");
             Assert.assertEquals(true, ValidationUtils.isJsonValid(schemaFile, jsonFile));
         } catch (Exception e) {
             handleException(e);
@@ -52,9 +52,9 @@ public class TestLab {
     @Test
     public void testLoadJsonResources() {
         try {
-            File dataFile = getFileResource("data.json");
+            File dataFile = getFileResource("unkown_type.json");
             JsonObject dataRootObject = getJsonObjectFromFile(dataFile);
-            File constraintsFile = getFileResource("constraints.json");
+            File constraintsFile = getFileResource("irrelevent.json");
             JsonObject constraintsRootObject = getJsonObjectFromFile(constraintsFile);
         }  catch (Exception e) {
             handleException(e);
@@ -75,7 +75,7 @@ public class TestLab {
     @Test
     public void testLoopOverDataEntrySet() {
         try {
-            File dataFile = getFileResource("data.json");
+            File dataFile = getFileResource("unkown_type.json");
             JsonObject dataRootObject = getJsonObjectFromFile(dataFile);
             Set<Map.Entry<String, JsonElement>> entrySet = dataRootObject.entrySet();
             for (Map.Entry<String, JsonElement> entry : entrySet) {
@@ -116,7 +116,7 @@ public class TestLab {
     @Test
     public void testGatherConstraints() {
         try {
-            File constraintsFile = getFileResource("constraints.json");
+            File constraintsFile = getFileResource("irrelevent.json");
             JsonObject cons_rootObject = getJsonObjectFromFile(constraintsFile);
 
             recursive(cons_rootObject);

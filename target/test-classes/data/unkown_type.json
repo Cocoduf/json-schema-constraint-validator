@@ -1,0 +1,18 @@
+{
+	"firstBoolean": true,
+	"secondBoolean": true,
+	"firstNumber": 1,
+	"secondNumber": 1,
+	"firstString": "a",
+	"secondString": "a",
+	"firstArray": ["a"],
+	"secondArray": ["a"],
+	"firstObject": {
+		"firstName": "a",
+		"lastName": "b"
+	},
+	"secondObject": {
+		"firstName": "a",
+		"lastName": "b"
+	}
+}

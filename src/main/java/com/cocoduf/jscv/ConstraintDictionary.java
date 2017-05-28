@@ -40,9 +40,49 @@ public class ConstraintDictionary {
                 array("boolean","number","string","array","object"),
                 array("boolean","number","string","array","object")) {
             @Override
-            public boolean isDataValid(Float source, Float target) {
-                System.out.println("LOG> ConstraintCore.isDataValid " + Float.toString(source) + " " + Float.toString(target));
+            public boolean isDataValid(Boolean source, Boolean target) {
                 return source.equals(target);
+            }
+            @Override
+            public boolean isDataValid(Float source, Float target) {
+                return source.equals(target);
+            }
+            @Override
+            public boolean isDataValid(String source, String target) {
+                return source.equals(target);
+            }
+            @Override
+            public boolean isDataValid(JsonArray source, JsonArray target) {
+                return source.equals(target);
+            }
+            @Override
+            public boolean isDataValid(JsonObject source, JsonObject target) {
+                return source.equals(target);
+            }
+        });
+
+        cores.put(ConstraintType.valueNotEqualTo, new ConstraintCore(
+                array("boolean","number","string","array","object"),
+                array("boolean","number","string","array","object")) {
+            @Override
+            public boolean isDataValid(Boolean source, Boolean target) {
+                return !source.equals(target);
+            }
+            @Override
+            public boolean isDataValid(Float source, Float target) {
+                return !source.equals(target);
+            }
+            @Override
+            public boolean isDataValid(String source, String target) {
+                return !source.equals(target);
+            }
+            @Override
+            public boolean isDataValid(JsonArray source, JsonArray target) {
+                return !source.equals(target);
+            }
+            @Override
+            public boolean isDataValid(JsonObject source, JsonObject target) {
+                return !source.equals(target);
             }
         });
     }
@@ -74,9 +114,9 @@ public class ConstraintDictionary {
                 case "string":
                     return isDataValid(source.getAsJsonPrimitive().getAsString(), target.getAsJsonPrimitive().getAsString());
                 case "array":
-                    return isDataValid(source.getAsJsonArray(), source.getAsJsonArray());
+                    return isDataValid(source.getAsJsonArray(), target.getAsJsonArray());
                 case "object":
-                    return isDataValid(source.getAsJsonObject(), source.getAsJsonObject());
+                    return isDataValid(source.getAsJsonObject(), target.getAsJsonObject());
                 default:
                     return true;
             }
@@ -132,7 +172,11 @@ enum ConstraintType {
     priorTo,
     subsequentTo;
 
-    public static ConstraintType getFromText(String typeName) {
-        return ConstraintType.valueOf(typeName);
+    public static ConstraintType getFromText(String typeName) throws IllegalArgumentException {
+        try {
+            return ConstraintType.valueOf(typeName);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Constraint type unknown : " + typeName);
+        }
     }
 }

@@ -48,8 +48,8 @@ public class Constraint {
         this.type = type;
     }
 
-    public void setType(String text) {
-        this.type = ConstraintType.getFromText(text);
+    public void setType(String text) throws IllegalArgumentException {
+            this.type = ConstraintType.getFromText(text);
     }
 
     public String toString() {
