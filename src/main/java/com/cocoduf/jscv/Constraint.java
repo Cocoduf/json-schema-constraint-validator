@@ -5,39 +5,49 @@ package com.cocoduf.jscv;
  */
 public class Constraint {
     private ConstraintType type;
-    private String fieldsType;
-    private JsonPointer sourceField;
-    private JsonPointer targetField;
+    private JsonPointer sourceFieldPath;
+    private JsonPointer targetFieldPath;
+    private String sourceFieldType;
+    private String targetFieldType;
 
-    Constraint(String typeName, String sourceFieldType, JsonPointer sourceField, JsonPointer targetField) {
+    Constraint(String typeName, JsonPointer sourceFieldPath, JsonPointer targetFieldPath, String sourceFieldType, String targetFieldType) {
         setType(typeName);
-        this.fieldsType = sourceFieldType;
-        this.sourceField = sourceField;
-        this.targetField = targetField;
+        this.sourceFieldPath = sourceFieldPath;
+        this.targetFieldPath = targetFieldPath;
+        this.sourceFieldType = sourceFieldType;
+        this.targetFieldType = targetFieldType;
     }
 
-    public String getFieldsType() {
-        return fieldsType;
+    public JsonPointer getSourceFieldPath() {
+        return sourceFieldPath;
     }
 
-    public void setFieldsType(String fieldsType) {
-        this.fieldsType = fieldsType;
+    public void setSourceFieldPath(JsonPointer sourceFieldPath) {
+        this.sourceFieldPath = sourceFieldPath;
     }
 
-    public JsonPointer getSourceField() {
-        return sourceField;
+    public JsonPointer getTargetFieldPath() {
+        return targetFieldPath;
     }
 
-    public void setSourceField(JsonPointer sourceField) {
-        this.sourceField = sourceField;
+    public void setTargetFieldPath(JsonPointer targetFieldPath) {
+        this.targetFieldPath = targetFieldPath;
     }
 
-    public JsonPointer getTargetField() {
-        return targetField;
+    public String getSourceFieldType() {
+        return sourceFieldType;
     }
 
-    public void setTargetField(JsonPointer targetField) {
-        this.targetField = targetField;
+    public void setSourceFieldType(String sourceFieldType) {
+        this.sourceFieldType = sourceFieldType;
+    }
+
+    public String getTargetFieldType() {
+        return targetFieldType;
+    }
+
+    public void setTargetFieldType(String targetFieldType) {
+        this.targetFieldType = targetFieldType;
     }
 
     public ConstraintType getType() {
@@ -53,6 +63,6 @@ public class Constraint {
     }
 
     public String toString() {
-        return sourceField + " " + type + " " + targetField;
+        return sourceFieldPath + " " + type + " " + targetFieldPath;
     }
 }

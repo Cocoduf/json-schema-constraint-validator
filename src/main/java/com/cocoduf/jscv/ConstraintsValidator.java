@@ -44,16 +44,16 @@ public class ConstraintsValidator {
         boolean valid = true;
         for (Constraint constraint : constraints) {
             System.out.println("LOG> " + constraint);
-            valid = valid && ConstraintDictionary.isDataValid(
+            valid = valid && ConstraintDictionary.validate(
                     constraint,
-                    getJsonElementFromPath(constraint.getSourceField()),
-                    getJsonElementFromPath(constraint.getTargetField())
+                    getJsonElementFromPath(constraint.getSourceFieldPath(), dataRootObject),
+                    getJsonElementFromPath(constraint.getTargetFieldPath(), dataRootObject)
             );
         }
         return valid;
     }
 
-    private JsonElement getJsonElementFromPath(JsonPointer path) throws IllegalArgumentException {
+    private JsonElement getJsonElementFromPath(JsonPointer path, JsonObject rootObject) throws IllegalArgumentException {
         System.out.println("LOG> ConstraintValidator.getJsonElementFromPath " + path);
         JsonObject property = null;
         JsonElement value = null;
@@ -63,9 +63,9 @@ public class ConstraintsValidator {
             node = nodes[i];
 
             if (node.equals("#")) {
-                property = dataRootObject;
+                property = rootObject;
             } else if (property != null) {
-                if (i == nodes.length + 1) {
+                if (i != nodes.length-1) {
                     property = property.get(node).getAsJsonObject();
                 } else {
                     value = property.get(node);
@@ -73,7 +73,7 @@ public class ConstraintsValidator {
             }
         }
         if (value == null) {
-            throw new IllegalArgumentException("Path "+path+" is invalid.");
+            throw new IllegalArgumentException("Path "+path+" is invalid");
         }
         return value;
     }
@@ -89,16 +89,19 @@ public class ConstraintsValidator {
                 JsonObject constraintObject = constraintElement.getAsJsonObject();
                 if (constraintObject.has(KEY_CONSTRAINT_TYPE) && constraintObject.has(KEY_TARGET_FIELD)) {
 
-                    Constraint c = new Constraint(constraintObject.get(KEY_CONSTRAINT_TYPE).getAsString(), sourceFieldType,
-                            sourceFieldPath, new JsonPointer(constraintObject.get(KEY_TARGET_FIELD).getAsString()));
+                    String constraintType = constraintObject.get(KEY_CONSTRAINT_TYPE).getAsString();
+                    JsonPointer targetFieldPath = new JsonPointer(constraintObject.get(KEY_TARGET_FIELD).getAsString());
+                    String targetFieldType = getJsonElementFromPath(new JsonPointer(targetFieldPath.toString().replaceAll("/","/properties/")), schemaRootObject).getAsJsonObject().get("type").getAsString();
+
+                    Constraint c = new Constraint(constraintType, sourceFieldPath, targetFieldPath, sourceFieldType, targetFieldType);
                     constraints.add(c);
                     System.out.println("LOG> " + c);
 
                 } else {
-                    throw new IllegalArgumentException("Contrainte incomplète dans " + sourceFieldPath.toString() + ".constraints");
+                    throw new IllegalArgumentException("Bad constraint definition in " + sourceFieldPath);
                 }
             } else {
-                throw new IllegalArgumentException("Erreur de syntaxe dans " + sourceFieldPath.toString() + ".constraints");
+                throw new IllegalArgumentException("Unexpected element in " + sourceFieldPath + ".constraints");
             }
         }
     }
@@ -113,7 +116,7 @@ public class ConstraintsValidator {
                 currentPath.push(entry.getKey());
                 System.out.println("LOG> browsing " + currentPath);
 
-                if (property.has("constraints")) {
+                if (property.has("constraints") && property.get("constraints").isJsonArray()) {
                     JsonArray constraints = property.get("constraints").getAsJsonArray();
                     makeConstraintsFromJson(constraints, new JsonPointer(currentPath), property.get("type").getAsString());
                 }
