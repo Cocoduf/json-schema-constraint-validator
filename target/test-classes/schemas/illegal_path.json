@@ -3,23 +3,18 @@
   "title": "Data",
   "type": "object",
   "properties": {
-    "a": {
-      "type": "array",
+    "firstNumber": {
+      "type": "number",
       "constraints": [
         {
           "type": "valueEqualTo",
-          "target": "#/b"
+          "target": "#/ILLEGAL_PATH"
         }
       ]
     },
-    "b": {
-      "type": "array",
-      "constraints": [
-        {
-          "type": "valueEqualTo",
-          "target": "#/a"
-        }
-      ]
+    "secondNumber": {
+      "type": "number"
     }
-  }
+  },
+  "required" : ["firstNumber","secondNumber"]
 }

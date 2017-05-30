@@ -17,7 +17,7 @@ public class TestJsonValidatorObject extends TestJsonValidator {
     @Test
     public void testValueEqualTo() {
         try {
-            Assert.assertEquals(true, validate("valueEqualTo"));
+            Assert.assertEquals(true, validate("valueEqualTo","a","b"));
         } catch(Exception e) {
             System.out.println(e);
             error();
@@ -27,7 +27,7 @@ public class TestJsonValidatorObject extends TestJsonValidator {
     @Test
     public void testValueNotEqualTo() {
         try {
-            Assert.assertEquals(true, validate("valueNotEqualTo"));
+            Assert.assertEquals(true, validate("valueNotEqualTo","a","c"));
         } catch(Exception e) {
             System.out.println(e);
             error();

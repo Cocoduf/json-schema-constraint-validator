@@ -3,21 +3,21 @@
   "title": "Data",
   "type": "object",
   "properties": {
-    "a": {
+    "SOURCE_NAME": {
       "type": "string",
       "constraints": [
         {
-          "type": "valueNotEqualTo",
-          "target": "#/c"
+          "type": "CONSTRAINT_TYPE",
+          "target": "#/TARGET_NAME"
         }
       ]
     },
-    "c": {
+    "TARGET_NAME": {
       "type": "string",
       "constraints": [
         {
-          "type": "valueNotEqualTo",
-          "target": "#/a"
+          "type": "CONSTRAINT_TYPE",
+          "target": "#/SOURCE_NAME"
         }
       ]
     }

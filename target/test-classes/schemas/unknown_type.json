@@ -5,7 +5,6 @@
   "properties": {
     "firstNumber": {
       "type": "number",
-      "minimum": 0,
       "constraints": [
         {
           "type": "UNKNOWN",
@@ -14,19 +13,7 @@
       ]
     },
     "secondNumber": {
-      "type": "number",
-      "minimum": 0
-    },
-    "person": {
-      "type": "object",
-      "properties": {
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        }
-      }
+      "type": "number"
     }
   },
   "required" : ["firstNumber","secondNumber"]

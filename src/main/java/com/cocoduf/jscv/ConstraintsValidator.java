@@ -53,7 +53,7 @@ public class ConstraintsValidator {
         return valid;
     }
 
-    private JsonElement getJsonElementFromPath(JsonPointer path) {
+    private JsonElement getJsonElementFromPath(JsonPointer path) throws IllegalArgumentException {
         System.out.println("LOG> ConstraintValidator.getJsonElementFromPath " + path);
         JsonObject property = null;
         JsonElement value = null;
@@ -71,6 +71,9 @@ public class ConstraintsValidator {
                     value = property.get(node);
                 }
             }
+        }
+        if (value == null) {
+            throw new IllegalArgumentException("Path "+path+" is invalid.");
         }
         return value;
     }
