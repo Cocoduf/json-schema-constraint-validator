@@ -13,13 +13,7 @@
       ]
     },
     "TARGET_NAME": {
-      "type": "array",
-      "constraints": [
-        {
-          "type": "CONSTRAINT_TYPE",
-          "target": "#/SOURCE_NAME"
-        }
-      ]
+      "type": "array"
     }
   }
 }

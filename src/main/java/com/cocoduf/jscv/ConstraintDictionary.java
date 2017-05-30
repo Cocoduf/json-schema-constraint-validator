@@ -82,6 +82,42 @@ public class ConstraintDictionary {
                 return !source.equals(target);
             }
         });
+
+        cores.put(ConstraintType.valueGreaterThan, new ConstraintCore(
+                array("number"),
+                array("number"), true) {
+            @Override
+            public boolean isDataValid(Float source, Float target) {
+                return source>target;
+            }
+        });
+
+        cores.put(ConstraintType.valueGreaterThanOrEqualTo, new ConstraintCore(
+                array("number"),
+                array("number"), true) {
+            @Override
+            public boolean isDataValid(Float source, Float target) {
+                return source>=target;
+            }
+        });
+
+        cores.put(ConstraintType.valueLesserThan, new ConstraintCore(
+                array("number"),
+                array("number"), true) {
+            @Override
+            public boolean isDataValid(Float source, Float target) {
+                return source<target;
+            }
+        });
+
+        cores.put(ConstraintType.valueLesserThanOrEqualTo, new ConstraintCore(
+                array("number"),
+                array("number"), true) {
+            @Override
+            public boolean isDataValid(Float source, Float target) {
+                return source<=target;
+            }
+        });
     }
 
     /******************************************************************************************************************/

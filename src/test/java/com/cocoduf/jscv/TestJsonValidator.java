@@ -11,8 +11,6 @@ import java.net.URL;
  */
 public abstract class TestJsonValidator {
 
-    //TODO method: generic string json constraint for each field type, called with args constraint type and compared fields name instead of ALL OF THOSE JSON FILES
-
     protected String fieldType;
 
     protected File getFileResource(String fileName) throws FileNotFoundException {

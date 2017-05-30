@@ -12,8 +12,6 @@ import java.io.FileNotFoundException;
  */
 public class TestJsonValidatorErrors extends TestJsonValidator {
 
-    //TODO test if json pointer of constraint's target points null
-
     @Test
     public void testValidateFailureInvalidData() {
         JsonValidator jsonValidator = new JsonValidator();
