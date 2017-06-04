@@ -47,7 +47,8 @@ public class ConstraintsValidator {
             valid = valid && ConstraintDictionary.validate(
                     constraint,
                     getJsonElementFromPath(constraint.getSourceFieldPath(), dataRootObject),
-                    getJsonElementFromPath(constraint.getTargetFieldPath(), dataRootObject)
+                    getJsonElementFromPath(constraint.getTargetFieldPath(), dataRootObject),
+                    getSchemaPropertyAttribute(constraint.getSourceFieldPath(), "format")
             );
         }
         return valid;
@@ -78,6 +79,19 @@ public class ConstraintsValidator {
         return value;
     }
 
+    private JsonPointer convertDataPathToSchemaPath(JsonPointer path) {
+        return new JsonPointer(path.toString().replaceAll("/","/properties/"));
+    }
+
+    private String getSchemaPropertyAttribute(JsonPointer path, String attribute) {
+        JsonObject property = getJsonElementFromPath(convertDataPathToSchemaPath(path), schemaRootObject).getAsJsonObject();
+        if (property.has(attribute)) {
+            return property.get(attribute).getAsString();
+        } else {
+            return null;
+        }
+    }
+
     private void buildConstraints() throws IllegalArgumentException {
         recursiveConstraintsBrowsing(schemaRootObject, new JsonPointer("#"));
     }
@@ -91,7 +105,7 @@ public class ConstraintsValidator {
 
                     String constraintType = constraintObject.get(KEY_CONSTRAINT_TYPE).getAsString();
                     JsonPointer targetFieldPath = new JsonPointer(constraintObject.get(KEY_TARGET_FIELD).getAsString());
-                    String targetFieldType = getJsonElementFromPath(new JsonPointer(targetFieldPath.toString().replaceAll("/","/properties/")), schemaRootObject).getAsJsonObject().get("type").getAsString();
+                    String targetFieldType = getSchemaPropertyAttribute(targetFieldPath, "type");
 
                     Constraint c = new Constraint(constraintType, sourceFieldPath, targetFieldPath, sourceFieldType, targetFieldType);
                     constraints.add(c);

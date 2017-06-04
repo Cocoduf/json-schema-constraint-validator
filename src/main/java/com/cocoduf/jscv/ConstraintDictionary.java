@@ -16,11 +16,11 @@ public class ConstraintDictionary {
 
     private ConstraintDictionary() {}
 
-    public static boolean validate(Constraint c, JsonElement source, JsonElement target) {
+    public static boolean validate(Constraint c, JsonElement source, JsonElement target, String valueFormat) {
         if (cores.isEmpty()) {
             generateCores();
         }
-        return getConstraintCoreFromConstraintType(c.getType()).check(source, target, c.getSourceFieldType(), c.getTargetFieldType());
+        return getConstraintCoreFromConstraintType(c.getType()).check(source, target, c.getSourceFieldType(), c.getTargetFieldType(), valueFormat);
     }
 
     public static ConstraintCore getConstraintCoreFromConstraintType(ConstraintType type) {
@@ -35,7 +35,7 @@ public class ConstraintDictionary {
 
         cores.put(ConstraintType.valueEqualTo, new ConstraintCore(
                 array("boolean","number","string","array","object"),
-                array("boolean","number","string","array","object"), true) {
+                array("boolean","number","string","array","object"), true, null) {
             @Override
             public boolean isDataValid(Boolean source, Boolean target) {
                 return source.equals(target);
@@ -60,7 +60,7 @@ public class ConstraintDictionary {
 
         cores.put(ConstraintType.valueNotEqualTo, new ConstraintCore(
                 array("boolean","number","string","array","object"),
-                array("boolean","number","string","array","object"), true) {
+                array("boolean","number","string","array","object"), true, null) {
             @Override
             public boolean isDataValid(Boolean source, Boolean target) {
                 return !source.equals(target);
@@ -118,6 +118,42 @@ public class ConstraintDictionary {
                 return source<=target;
             }
         });
+
+        cores.put(ConstraintType.priorTo, new ConstraintCore(
+                array("string"),
+                array("string"), true, array("date-time","date")) {
+            @Override
+            public boolean isDataValid(String source, String target) {
+                return new JsonDateTime(source).isPriorTo(new JsonDateTime(target));
+            }
+        });
+
+        cores.put(ConstraintType.subsequentTo, new ConstraintCore(
+                array("string"),
+                array("string"), true, array("date-time","date")) {
+            @Override
+            public boolean isDataValid(String source, String target) {
+                return new JsonDateTime(source).isSubsequentTo(new JsonDateTime(target));
+            }
+        });
+/*
+        cores.put(ConstraintType.inArray, new ConstraintCore(
+                array("number","string"),
+                array("array"), false, null) {
+            @Override
+            public boolean isDataValid(JsonElement source, JsonArray target, String sourceType) {
+                return false;
+            }
+        });
+
+        cores.put(ConstraintType.notInArray, new ConstraintCore(
+                array("number","string"),
+                array("number"), false, null) {
+            @Override
+            public boolean isDataValid(JsonElement source, JsonArray target, String sourceType) {
+                return false;
+            }
+        });*/
     }
 
     /******************************************************************************************************************/
@@ -129,8 +165,8 @@ public class ConstraintDictionary {
     public static class ConstraintCore {
         private String[] allowedSourceFieldTypes;
         private String[] allowedTargetFieldTypes;
-        private boolean matchingTypes;
-        private String requiredFormat;
+        private boolean matchingTypes = false;
+        private String[] requiredFormat = null;
 
         public ConstraintCore(String[] sourceTypes, String[] targetTypes) {
             this.allowedSourceFieldTypes = sourceTypes;
@@ -140,6 +176,16 @@ public class ConstraintDictionary {
         public ConstraintCore(String[] sourceTypes, String[] targetTypes, Boolean matchingTypes) {
             this(sourceTypes, targetTypes);
             this.matchingTypes = matchingTypes;
+        }
+
+        public ConstraintCore(String[] sourceTypes, String[] targetTypes, String[] requiredFormat) {
+            this(sourceTypes, targetTypes);
+            this.requiredFormat = requiredFormat;
+        }
+
+        public ConstraintCore(String[] sourceTypes, String[] targetTypes, Boolean matchingTypes, String[] requiredFormat) {
+            this(sourceTypes, targetTypes, matchingTypes);
+            this.requiredFormat = requiredFormat;
         }
 
         // For the clueless external calls
@@ -162,7 +208,7 @@ public class ConstraintDictionary {
         }
 
         public boolean validateDataOfMatchingTypes(JsonElement source, JsonElement target, String fieldsType) {
-            System.out.println("LOG> ConstraintCore.validateData " + fieldsType);
+            System.out.println("LOG> ConstraintCore.validateDataOfMatchingTypes " + fieldsType);
             switch (fieldsType) {
                 case "boolean":
                     return isDataValid(asBoolean(source), asBoolean(target));
@@ -180,16 +226,16 @@ public class ConstraintDictionary {
         }
 
         // This block has type-specific implementations
-        public boolean isDataValid(Boolean source, Boolean target) { throw new IllegalStateException("Constraint not implemented 1"); };
-        public boolean isDataValid(Float source, Float target) { throw new IllegalStateException("Constraint not implemented 2"); };
-        public boolean isDataValid(String source, String target) { throw new IllegalStateException("Constraint not implemented 3"); };
-        public boolean isDataValid(JsonArray source, JsonArray target) { throw new IllegalStateException("Constraint not implemented 4"); };
-        public boolean isDataValid(JsonObject source, JsonObject target) { throw new IllegalStateException("Constraint not implemented 5"); };
-        public boolean isDataValid(JsonElement source, Boolean target, String sourceType) { throw new IllegalStateException("Constraint not implemented 6"); };
-        public boolean isDataValid(JsonElement source, Float target, String sourceType) { throw new IllegalStateException("Constraint not implemented 7"); };
-        public boolean isDataValid(JsonElement source, String target, String sourceType) { throw new IllegalStateException("Constraint not implemented 8"); };
-        public boolean isDataValid(JsonElement source, JsonArray target, String sourceType) { throw new IllegalStateException("Constraint not implemented 9"); };
-        public boolean isDataValid(JsonElement source, JsonObject target, String sourceType) { throw new IllegalStateException("Constraint not implemented 10"); };
+        public boolean isDataValid(Boolean source, Boolean target) { throw new IllegalStateException("Constraint not implemented 1"); }
+        public boolean isDataValid(Float source, Float target) { throw new IllegalStateException("Constraint not implemented 2"); }
+        public boolean isDataValid(String source, String target) { throw new IllegalStateException("Constraint not implemented 3"); }
+        public boolean isDataValid(JsonArray source, JsonArray target) { throw new IllegalStateException("Constraint not implemented 4"); }
+        public boolean isDataValid(JsonObject source, JsonObject target) { throw new IllegalStateException("Constraint not implemented 5"); }
+        public boolean isDataValid(JsonElement source, Boolean target, String sourceType) { throw new IllegalStateException("Constraint not implemented 6"); }
+        public boolean isDataValid(JsonElement source, Float target, String sourceType) { throw new IllegalStateException("Constraint not implemented 7"); }
+        public boolean isDataValid(JsonElement source, String target, String sourceType) { throw new IllegalStateException("Constraint not implemented 8"); }
+        public boolean isDataValid(JsonElement source, JsonArray target, String sourceType) { throw new IllegalStateException("Constraint not implemented 9"); }
+        public boolean isDataValid(JsonElement source, JsonObject target, String sourceType) { throw new IllegalStateException("Constraint not implemented 10"); }
 
         private boolean arrayHas(String[] array, String value) {
             System.out.println("LOG> ConstraintCore.arrayHas " + value);
@@ -200,14 +246,16 @@ public class ConstraintDictionary {
             return result;
         }
 
-        private boolean verifyFieldsValidity(String sourceType, String targetType) {
-            return arrayHas(allowedSourceFieldTypes, sourceType) && arrayHas(allowedTargetFieldTypes, targetType) && (!matchingTypes||sourceType.equals(targetType));
+        private boolean verifyFieldsValidity(String sourceType, String targetType, String valueFormat) {
+            System.out.println("Format : " + valueFormat);
+            return arrayHas(allowedSourceFieldTypes, sourceType) && arrayHas(allowedTargetFieldTypes, targetType)
+                    && (!matchingTypes||sourceType.equals(targetType)) && (requiredFormat==null||arrayHas(requiredFormat, valueFormat));
         }
 
-        public boolean check(JsonElement sourceValue, JsonElement targetValue, String sourceType, String targetType) {
-            System.out.println(sourceValue + " AND " + targetValue);
-            return verifyFieldsValidity(sourceType, targetType)
-                    && (matchingTypes) ? validateDataOfMatchingTypes(sourceValue, targetValue, sourceType) : validateData(sourceValue, targetValue, sourceType, targetType);
+        public boolean check(JsonElement sourceValue, JsonElement targetValue, String sourceType, String targetType, String valueFormat) {
+            System.out.println(sourceValue + " AND " + targetValue + " matching ? " + matchingTypes);
+            return verifyFieldsValidity(sourceType, targetType, valueFormat)
+                    && (matchingTypes ? validateDataOfMatchingTypes(sourceValue, targetValue, sourceType) : validateData(sourceValue, targetValue, sourceType, targetType));
         }
 
         public boolean asBoolean(JsonElement element) {
@@ -235,12 +283,6 @@ enum ConstraintType {
     valueGreaterThanOrEqualTo,
     valueLesserThan,
     valueLesserThanOrEqualTo,
-    lengthEqualTo,
-    lengthNotEqualTo,
-    lengthGreaterThan,
-    lengthGreaterThanOrEqualTo,
-    lengthLesserThan,
-    lengthLesserThanOrEqualTo,
     inArray,
     notInArray,
     priorTo,

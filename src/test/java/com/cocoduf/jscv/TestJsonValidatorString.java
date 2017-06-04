@@ -34,4 +34,28 @@ public class TestJsonValidatorString extends TestJsonValidator {
         }
     }
 
+    @Test
+    public void testPriorTo() {
+        try {
+            JsonValidator jsonValidator = new JsonValidator();
+            jsonValidator.setSchema(getFormattedJsonData("schemas/date-time.json", "priorTo", "a", "c"));
+            Assert.assertEquals(true, jsonValidator.validateJson(getFileResource("data/date-time.json")));
+        } catch(Exception e) {
+            System.out.println(e);
+            error();
+        }
+    }
+
+    @Test
+    public void testSubsequentTo() {
+        try {
+            JsonValidator jsonValidator = new JsonValidator();
+            jsonValidator.setSchema(getFormattedJsonData("schemas/date-time.json", "subsequentTo", "a", "b"));
+            Assert.assertEquals(true, jsonValidator.validateJson(getFileResource("data/date-time.json")));
+        } catch(Exception e) {
+            System.out.println(e);
+            error();
+        }
+    }
+
 }
