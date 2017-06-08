@@ -136,24 +136,36 @@ public class ConstraintDictionary {
                 return new JsonDateTime(source).isSubsequentTo(new JsonDateTime(target));
             }
         });
-/*
+
         cores.put(ConstraintType.inArray, new ConstraintCore(
                 array("number","string"),
                 array("array"), false, null) {
             @Override
             public boolean isDataValid(JsonElement source, JsonArray target, String sourceType) {
+                for (int i = 0; i < target.size(); i++) {
+                    JsonElement e = target.get(i);
+                    if (e.equals(source)) {
+                        return true;
+                    }
+                }
                 return false;
             }
         });
 
         cores.put(ConstraintType.notInArray, new ConstraintCore(
                 array("number","string"),
-                array("number"), false, null) {
+                array("array"), false, null) {
             @Override
             public boolean isDataValid(JsonElement source, JsonArray target, String sourceType) {
-                return false;
+                for (int i = 0; i < target.size(); i++) {
+                    JsonElement e = target.get(i);
+                    if (e.equals(source)) {
+                        return false;
+                    }
+                }
+                return true;
             }
-        });*/
+        });
     }
 
     /******************************************************************************************************************/

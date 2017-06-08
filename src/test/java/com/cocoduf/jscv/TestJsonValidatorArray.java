@@ -34,4 +34,16 @@ public class TestJsonValidatorArray extends TestJsonValidator {
         }
     }
 
+    @Test
+    public void testInArrayNotInArray() {
+        try {
+            JsonValidator jsonValidator = new JsonValidator();
+            jsonValidator.setSchema(getFileResource("schemas/inArray.json"));
+            Assert.assertEquals(true, jsonValidator.validateJson(getFileResource("data/inArray.json")));
+        } catch(Exception e) {
+            System.out.println(e);
+            error();
+        }
+    }
+
 }
