@@ -80,4 +80,16 @@ public class TestJsonValidatorNumber extends TestJsonValidator {
         }
     }
 
+    @Test
+    public void multipleConstraints() {
+        try {
+            JsonValidator jsonValidator = new JsonValidator();
+            jsonValidator.setSchema(getFileResource("schemas/multipleConstraints.json"));
+            Assert.assertEquals(true, jsonValidator.validateJson(getFileResource("data/number.json")));
+        } catch(Exception e) {
+            System.out.println(e);
+            error();
+        }
+    }
+
 }
