@@ -38,7 +38,7 @@ Step 2. Add the dependency
 <dependency>
     <groupId>com.github.cocoduf</groupId>
     <artifactId>json-schema-constraints-validator</artifactId>
-    <version>1.0.0</version>
+    <version>-SNAPSHOT</version>
 </dependency>
 ```
 ## Developing
