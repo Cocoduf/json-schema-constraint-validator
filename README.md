@@ -24,10 +24,11 @@ Maven:
 ```
 ## Developing
 
+Basic use of this library only requires the methods found in the JsonValidator.java file.
 Here's how to test some JSON:
 
 ```java
 JsonValidator jsonValidator = new JsonValidator();
-jsonValidator.setSchema("raw json string" OR File instance);
-boolean isJsonValid = jsonValidator.validateJson("raw json string" OR File instance);
+jsonValidator.setSchema("raw json string" OR java.io.File instance);
+boolean isJsonValid = jsonValidator.validateJson("raw json string" OR java.io.File instance);
 ```

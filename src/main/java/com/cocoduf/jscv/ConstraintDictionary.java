@@ -234,16 +234,16 @@ public class ConstraintDictionary {
         }
 
         // This block has type-specific implementations
-        public boolean isDataValid(Boolean source, Boolean target) { throw new IllegalStateException("Constraint not implemented 1"); }
-        public boolean isDataValid(Float source, Float target) { throw new IllegalStateException("Constraint not implemented 2"); }
-        public boolean isDataValid(String source, String target) { throw new IllegalStateException("Constraint not implemented 3"); }
-        public boolean isDataValid(JsonArray source, JsonArray target) { throw new IllegalStateException("Constraint not implemented 4"); }
-        public boolean isDataValid(JsonObject source, JsonObject target) { throw new IllegalStateException("Constraint not implemented 5"); }
-        public boolean isDataValid(JsonElement source, Boolean target, String sourceType) { throw new IllegalStateException("Constraint not implemented 6"); }
-        public boolean isDataValid(JsonElement source, Float target, String sourceType) { throw new IllegalStateException("Constraint not implemented 7"); }
-        public boolean isDataValid(JsonElement source, String target, String sourceType) { throw new IllegalStateException("Constraint not implemented 8"); }
-        public boolean isDataValid(JsonElement source, JsonArray target, String sourceType) { throw new IllegalStateException("Constraint not implemented 9"); }
-        public boolean isDataValid(JsonElement source, JsonObject target, String sourceType) { throw new IllegalStateException("Constraint not implemented 10"); }
+        public boolean isDataValid(Boolean source, Boolean target) { throw new IllegalStateException("Constraint not implemented for source: boolean & target: boolean"); }
+        public boolean isDataValid(Float source, Float target) { throw new IllegalStateException("Constraint not implemented for source: number & target: number"); }
+        public boolean isDataValid(String source, String target) { throw new IllegalStateException("Constraint not implemented for source: string & target: string"); }
+        public boolean isDataValid(JsonArray source, JsonArray target) { throw new IllegalStateException("Constraint not implemented for source: array & target: array"); }
+        public boolean isDataValid(JsonObject source, JsonObject target) { throw new IllegalStateException("Constraint not implemented for source: object & target: object"); }
+        public boolean isDataValid(JsonElement source, Boolean target, String sourceType) { throw new IllegalStateException("Constraint not implemented for source: unknown & target: boolean"); }
+        public boolean isDataValid(JsonElement source, Float target, String sourceType) { throw new IllegalStateException("Constraint not implemented for source: unknown & target: boolean"); }
+        public boolean isDataValid(JsonElement source, String target, String sourceType) { throw new IllegalStateException("Constraint not implemented for source: unknown & target: boolean"); }
+        public boolean isDataValid(JsonElement source, JsonArray target, String sourceType) { throw new IllegalStateException("Constraint not implemented for source: unknown & target: boolean"); }
+        public boolean isDataValid(JsonElement source, JsonObject target, String sourceType) { throw new IllegalStateException("Constraint not implemented for source: unknown & target: boolean"); }
 
         private boolean arrayHas(String[] array, String value) {
             boolean result = false;
