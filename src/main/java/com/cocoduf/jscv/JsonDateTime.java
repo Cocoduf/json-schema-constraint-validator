@@ -59,7 +59,7 @@ public class JsonDateTime {
             } catch (Exception e) {}
         }
         if (date == null) {
-            throw new IllegalArgumentException("Date invalide : " + textDate);
+            throw new IllegalArgumentException("Invalid date : " + textDate);
         }
     }
 }

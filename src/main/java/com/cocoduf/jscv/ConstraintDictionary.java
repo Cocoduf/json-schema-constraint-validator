@@ -24,14 +24,12 @@ public class ConstraintDictionary {
     }
 
     public static ConstraintCore getConstraintCoreFromConstraintType(ConstraintType type) {
-        System.out.println("LOG> ConstraintDictionary.getConstraintCoreFromConstraintType");
         return cores.get(type);
     }
 
     /******************************************************************************************************************/
 
     private static void generateCores() {
-        System.out.println("LOG> ConstraintDictionary.generateCores");
 
         cores.put(ConstraintType.valueEqualTo, new ConstraintCore(
                 array("boolean","number","string","array","object"),
@@ -202,7 +200,6 @@ public class ConstraintDictionary {
 
         // For the clueless external calls
         public boolean validateData(JsonElement source, JsonElement target, String sourceType, String targetType) {
-            System.out.println("LOG> ConstraintCore.validateData " + sourceType + " & " + targetType);
             switch (targetType) {
                 case "boolean":
                     return isDataValid(source, asBoolean(target), sourceType);
@@ -220,7 +217,6 @@ public class ConstraintDictionary {
         }
 
         public boolean validateDataOfMatchingTypes(JsonElement source, JsonElement target, String fieldsType) {
-            System.out.println("LOG> ConstraintCore.validateDataOfMatchingTypes " + fieldsType);
             switch (fieldsType) {
                 case "boolean":
                     return isDataValid(asBoolean(source), asBoolean(target));
@@ -250,7 +246,6 @@ public class ConstraintDictionary {
         public boolean isDataValid(JsonElement source, JsonObject target, String sourceType) { throw new IllegalStateException("Constraint not implemented 10"); }
 
         private boolean arrayHas(String[] array, String value) {
-            System.out.println("LOG> ConstraintCore.arrayHas " + value);
             boolean result = false;
             for (String s : array) {
                 result = result || s.equals(value);
@@ -259,13 +254,11 @@ public class ConstraintDictionary {
         }
 
         private boolean verifyFieldsValidity(String sourceType, String targetType, String valueFormat) {
-            System.out.println("Format : " + valueFormat);
             return arrayHas(allowedSourceFieldTypes, sourceType) && arrayHas(allowedTargetFieldTypes, targetType)
                     && (!matchingTypes||sourceType.equals(targetType)) && (requiredFormat==null||arrayHas(requiredFormat, valueFormat));
         }
 
         public boolean check(JsonElement sourceValue, JsonElement targetValue, String sourceType, String targetType, String valueFormat) {
-            System.out.println(sourceValue + " AND " + targetValue + " matching ? " + matchingTypes);
             return verifyFieldsValidity(sourceType, targetType, valueFormat)
                     && (matchingTypes ? validateDataOfMatchingTypes(sourceValue, targetValue, sourceType) : validateData(sourceValue, targetValue, sourceType, targetType));
         }
