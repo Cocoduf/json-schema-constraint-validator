@@ -92,6 +92,7 @@ A constraint is an object with a "type" and a "target".
 Target must be a valid [JSON Pointer](https://tools.ietf.org/html/rfc6901) (# being the root object).
 
 Here is a table describing each available constraint type:
+
 | Source field                           | Constraint name           | Target field                           | Required JSON Schema format |
 |----------------------------------------|---------------------------|----------------------------------------|-----------------------------|
 | BOOLEAN, NUMBER, STRING, ARRAY, OBJECT | valueEqualTo              | BOOLEAN, NUMBER, STRING, ARRAY, OBJECT |                             |
