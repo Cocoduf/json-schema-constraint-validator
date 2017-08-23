@@ -109,7 +109,7 @@ Here is a table describing each available constraint type:
 Available date formats: "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss".
 
 #### Examples
-Note: There are plenty of examples in the test files.
+_Note: There are plenty of examples in the test files._
 
 ##### Testing if a number is greater than an other number
 ```json
@@ -164,7 +164,7 @@ Note: There are plenty of examples in the test files.
   "title": "Data",
   "type": "object",
   "properties": {
-    "SOURCE_NAME": {
+    "SOURCE": {
       "type": "string",
       "constraints": [
         {
@@ -174,7 +174,7 @@ Note: There are plenty of examples in the test files.
       ],
       "format": "date"
     },
-    "TARGET_NAME": {
+    "TARGET": {
       "type": "string",
       "format": "date"
     }
